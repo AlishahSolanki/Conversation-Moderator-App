@@ -1,0 +1,1 @@
+cp -f node_modules\react-native-audio-recorder-player\android\src\main\java\com\dooboolab.audiorecorderplayer\RNAudioRecorderPlayerModule.kt patches\RNAudioRecorderPlayerModule.kt 

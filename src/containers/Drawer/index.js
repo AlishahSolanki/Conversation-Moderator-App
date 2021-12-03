@@ -1,11 +1,15 @@
-import React, {useCallback, useContext} from 'react';
+import React, { Component } from 'react';
 import {
-  FlatList,
-  Image,
-  Platform,
-  SafeAreaView,
-  Text,
-  View,
+    Platform,
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    Button,
+    LayoutAnimation,
+    Image,
+    ScrollView,
+    Animated
 } from 'react-native';
 import {connect, useDispatch} from 'react-redux';
 import {logout, request} from '../../actions/ServiceAction';
@@ -18,116 +22,101 @@ import {
   toggleDrawer,
 } from '../../services/NavigationService';
 import {Images, Metrics} from '../../theme';
-import styles from './styles';
+// import styles from './styles';
 
-const drawerRoutes = [
-  {
-    title: 'Bitcoin',
-    route: 'BTC',
-    image: Images.icbtc,
-  },
-  {
-    title: 'Ethereum',
-    route: 'ETH',
-    image: Images.iceth,
-  },
-  {
-    title: 'Shiba Inu',
-    route: 'SHIB',
-    image: Images.icshib,
-  },
-  {
-    title: 'Solana',
-    route: 'Sol',
-    image: Images.icsol,
-  },
-  {
-    title: 'Dogecoin',
-    route: 'Doge',
-    image: Images.icdoge,
-  },
-  {
-    title: 'XRP',
-    route: 'XRP',
-    image: Images.icxrp,
-  },
-  {
-    title: 'Polkadot',
-    route: 'Dot',
-    image: Images.icdot,
-  },
-  {
-    title: 'Cardano',
-    route: 'ADA',
-    image: Images.icada,
-  },
-  {
-    title: 'Binance Coin',
-    route: 'BNB',
-    image: Images.icbnb,
-  },
-  {
-    title: 'eCash',
-    route: 'XEC',
-    image: Images.icecash,
-  },
-];
-//save kar done
-const index = props => {
-  const {request} = props;
-  const {setLogin} = useContext(LoginContext);
-  const dispatch = useDispatch();
-  const _renderItem = ({item, index}) => (
-    <DrawerCell item={item} index={index} />
-  );
+class index extends Component {
+    state = {
+        isPressed: false,
+        animated: new Animated.Value(0),
+        opacityA: new Animated.Value(1),
+    }
+    constructor(props) {
+        super(props);
+        this._onPress = this._onPress.bind(this);
+    }
+    _runAnimation() {
+        const { animated, opacityA } = this.state;
 
-  const DrawerCell = ({item, index}) => {
-    const onPress = useCallback(() => {
-      toggleDrawer();
-      navigate('Home', {coin: item});
-    }, []);
+        Animated.loop(
+            Animated.parallel([
+                Animated.timing(animated, {
+                    toValue: 1,
+                    duration: 1000,
 
-    return (
-      <ButtonView
-        key={`${index}`}
-        style={styles.cellContainer}
-        onPress={() => onPress()}>
-        <Image
-          source={item.image}
-          resizeMode="contain"
-          style={{width: 30, height: 30}}
-        />
-        <Text style={styles.txtTitle}>{item.title}</Text>
-      </ButtonView>
-    );
-  };
+                }),
+                Animated.timing(opacityA, {
+                    toValue: 0,
+                    duration: 1000,
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={{marginTop: Metrics.heightRatio(50)}}>
-        <FlatList
-          data={drawerRoutes}
-          renderItem={_renderItem}
-          contentContainerStyle={{paddingVertical: 15}}
-          keyExtractor={item => item.title}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-      {/* <ButtonView
-        style={{
-          position: 'absolute',
-          top:
-            Platform.OS === 'ios'
-              ? Metrics.heightRatio(50)
-              : Metrics.heightRatio(20),
-          right: Metrics.widthRatio(20),
-        }}
-        onPress={() => closeDrawer()}>
-        <Image source={Images.icCross} resizeMode="contain" />
-      </ButtonView> */}
-    </SafeAreaView>
-  );
-};
+                })
+            ])
+        ).start();
+    }
+    _stopAnimation() {
+        Animated.loop(
+            Animated.parallel([
+                Animated.timing(animated),
+                Animated.timing(opacityA)
+            ])
+        ).stop();
+    }
+    _onPress() {
+        this.setState(
+            state => ({ isPressed: !state.isPressed }),
+        )
+    }
+    _micButton() {
+        const { isPressed, animated, opacityA, } = this.state;
+        if (isPressed) {
+            //some function
+            this._runAnimation();
+            return (
+                <Animated.View style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 50,
+                    backgroundColor: 'rgba(153,0,0,0.4)',
+                    opacity: opacityA,
+                    transform: [
+                        {
+                            scale: animated
+                        }
+                    ]
+                }}>
+                    {/* icon or image */}
+                </Animated.View>
+            );
+        } else {
+            //some function
+            return (
+                <View style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 50,
+                    backgroundColor: 'rgba(153,0,0,0.4)',
+                }}>
+                    {/* icon or image */}
+                </View>
+            );
+        }
+    }
+
+
+
+
+
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <TouchableOpacity onPress={this._onPress}>
+                    {this._micButton()}
+                </TouchableOpacity>
+            </View>
+        );
+    }
+}
+
 
 const actions = {request};
 const mapStateToProps = ({}) => {
@@ -135,3 +124,12 @@ const mapStateToProps = ({}) => {
 };
 
 export default connect(mapStateToProps, actions)(index);
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
+
+});

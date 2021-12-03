@@ -16,6 +16,7 @@ import IconWithBadge from "./IconWithBadge";
 import ImageHandler from "./ImageHandler";
 import RoundProfileImage from "./RoundProfileImage";
 import Loader from "./Loader";
+import SoundCloudWave from "./SoundCloudWave";
 export {
   MaterialTextField,
   AppButton,
@@ -28,4 +29,5 @@ export {
   ImageHandler,
   RoundProfileImage,
   Loader,
+  SoundCloudWave
 };

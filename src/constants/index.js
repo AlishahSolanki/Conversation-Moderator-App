@@ -9,7 +9,7 @@ const constant = {
   //App Constants
   socketIP: '192.34.60.217',
   socketPort: '1233',
-  baseURL: 'http://10.125.215.75:5000/',
+  baseURL: 'http://192.168.254.41:5000/',
   baseImageURL: '',
   applicationToken: 'api.Pd*!(5675',
   //Services Constants
